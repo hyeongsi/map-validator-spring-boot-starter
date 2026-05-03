@@ -28,7 +28,8 @@ public class ValidateMapAspect {
 
     private final Map<Method, List<ValidationMeta>> cache = new ConcurrentHashMap<>();
 
-    @Around("within(@org.springframework.web.bind.annotation.RestController *)")
+    @Around("within(@org.springframework.web.bind.annotation.RestController *) ||" +
+        "within(@org.springframework.stereotype.Controller *)")
     public Object validate(ProceedingJoinPoint joinPoint) throws Throwable {
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
