@@ -37,6 +37,13 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- IDE에서 설정 파일 자동완성 지원 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+
     <!-- AOP -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -61,6 +68,12 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
