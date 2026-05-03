@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.aop.support.AopUtils;
 
@@ -28,8 +29,11 @@ public class ValidateMapAspect {
 
     private final Map<Method, List<ValidationMeta>> cache = new ConcurrentHashMap<>();
 
-    @Around("within(@org.springframework.web.bind.annotation.RestController *) ||" +
+    @Pointcut("within(@org.springframework.web.bind.annotation.RestController *) ||" +
         "within(@org.springframework.stereotype.Controller *)")
+    public void controllerPointcut() {}
+
+    @Around("controllerPointcut()")
     public Object validate(ProceedingJoinPoint joinPoint) throws Throwable {
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
