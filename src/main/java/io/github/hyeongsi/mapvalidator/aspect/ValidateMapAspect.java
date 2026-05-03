@@ -62,7 +62,7 @@ public class ValidateMapAspect {
                 throw new RuntimeException("Invalid request format", e);
             }
 
-            Set<ConstraintViolation<Object>> validate = validator.validate(dto);
+            Set<ConstraintViolation<Object>> validate = validator.validate(dto, meta.groups);
 
             if (!validate.isEmpty()) {
                 throw new ConstraintViolationException(validate);
@@ -82,7 +82,7 @@ public class ValidateMapAspect {
             ValidateMap annotation = parameters[i].getAnnotation(ValidateMap.class);
             if (annotation == null) continue;
 
-            ValidationMeta meta = new ValidationMeta(i, annotation.value());
+            ValidationMeta meta = new ValidationMeta(i, annotation.value(), annotation.groups());
             result.add(meta);
         }
 

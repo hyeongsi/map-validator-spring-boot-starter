@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidateMap {
     Class<?> value() default void.class;
+    Class<?>[] groups() default {};
 }
