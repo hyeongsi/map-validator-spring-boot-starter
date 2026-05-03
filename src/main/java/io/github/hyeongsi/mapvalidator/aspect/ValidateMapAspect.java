@@ -88,14 +88,4 @@ public class ValidateMapAspect {
 
         return result;
     }
-
-    static class ValidationMeta {
-        final int index;
-        final Class<?> dtoClass;
-
-        public ValidationMeta(int index, Class<?> dtoClass) {
-            this.index = index;
-            this.dtoClass = dtoClass;
-        }
-    }
 }
