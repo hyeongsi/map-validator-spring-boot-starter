@@ -74,6 +74,12 @@ public ResponseEntity<?> update(
 }
 ```
 
+## ⚠️ 제약사항
+
+- DTO는 반드시 **기본 생성자 + Getter/Setter** 필요
+- 중첩 객체(Nested Object)는 Jackson 설정에 의존
+- Map의 키는 DTO 필드명과 일치해야 함
+- 타입 변환 실패 시 Jackson 예외 발생 가능
 ---
 
 ## 🚨 문제 해결 및 FAQ
