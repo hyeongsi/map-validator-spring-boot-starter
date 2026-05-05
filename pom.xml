@@ -4,7 +4,7 @@
 
   <groupId>io.github.hyeongsi</groupId>
   <artifactId>map-validator-spring-boot-starter</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
 
   <name>map-validator-spring-boot-starter</name>
@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.4.3</version>
+    <version>3.4.5</version>
     <relativePath/>
   </parent>
 
