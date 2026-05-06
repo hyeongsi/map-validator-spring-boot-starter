@@ -3,6 +3,7 @@ package io.github.hyeongsi.mapvalidator.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.hyeongsi.mapvalidator.aspect.ValidateMapAspect;
 import jakarta.validation.Validator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 
+@Slf4j
 @AutoConfiguration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnProperty(
@@ -30,6 +32,8 @@ public class MapValidationAutoConfiguration {
         ObjectMapper objectMapper,
         Validator validator
     ) {
+        // [INFO] 라이브러리 활성화 로깅
+        log.info("[MapValidator] Initializing MapValidationAspect. Library is now active.");
         return new ValidateMapAspect(objectMapper, validator);
     }
 }

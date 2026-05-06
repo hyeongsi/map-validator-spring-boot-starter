@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 @Aspect
 @RequiredArgsConstructor
@@ -40,11 +41,24 @@ public class ValidateMapAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = AopUtils.getMostSpecificMethod(signature.getMethod(), joinPoint.getTarget().getClass());
 
-        List<ValidationMeta> metas = cache.computeIfAbsent(method, this::extractMeta);
+        // 캐시 확인 로깅
+        if (cache.containsKey(method)) {
+            log.trace("[MapValidator] Cache HIT for method: {}", method.getName());
+        } else {
+            log.trace("[MapValidator] Cache MISS for method: {}", method.getName());
+        }
+
+        List<ValidationMeta> metas = cache.computeIfAbsent(method, m -> {
+            // [DEBUG] 캐시 확인 및 메타데이터 추출 로깅
+            log.debug("[MapValidator] Extracting metadata for method: {}", m.getName());
+            return this.extractMeta(m);
+        });
 
         if (metas.isEmpty()) {
             return joinPoint.proceed();
         }
+
+        log.trace("[MapValidator] Starting validation for method: {}", method.getName());
 
         Object[] args = joinPoint.getArgs();
 
@@ -62,14 +76,28 @@ public class ValidateMapAspect {
             Object arg = args[meta.index];
 
             if (!(arg instanceof Map<?, ?> param)) {
+                // [ERROR] 잘못된 사용 사례 로깅
+                log.error("[MapValidator] Critical Error: @ValidateMap assigned to non-Map parameter at index {}", meta.index);
                 throw new IllegalArgumentException("@ValidateMap must be used on Map parameter");
             }
+
+            // [DEBUG] 변환 과정 로깅
+            log.debug("[MapValidator] Converting Map to DTO: {} using groups: {}", meta.dtoClass.getSimpleName(), Arrays.toString(meta.groups));
 
             Object dto = objectMapper.convertValue(param, meta.dtoClass);
             Set<ConstraintViolation<Object>> validate = validator.validate(dto, meta.groups);
 
             if (!validate.isEmpty()) {
+                // [WARN] 검증 실패 로깅
+                log.warn("[MapValidator] Validation failed for method[{}]. Violations count: {}", method.getName(), validate.size());
+
+                // 상세 오류 trace 로깅 (개발 시 확인 용도)
+                if (log.isTraceEnabled()) {
+                    validate.forEach(v -> log.trace("[MapValidator] Detail: field={}, message={}", v.getPropertyPath(), v.getMessage()));
+                }
+
                 if (validationResult != null) {
+
                     validationResult.addErrors(validate);
                 } else {
                     throw new ConstraintViolationException(validate);
