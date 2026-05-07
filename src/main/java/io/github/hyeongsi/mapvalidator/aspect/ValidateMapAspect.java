@@ -2,6 +2,7 @@ package io.github.hyeongsi.mapvalidator.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.hyeongsi.mapvalidator.annotation.ValidateMap;
+import io.github.hyeongsi.mapvalidator.exception.MapValidationException;
 import io.github.hyeongsi.mapvalidator.result.MapValidationResult;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -97,10 +98,13 @@ public class ValidateMapAspect {
                 }
 
                 if (validationResult != null) {
-
                     validationResult.addErrors(validate);
                 } else {
-                    throw new ConstraintViolationException(validate);
+                    List<String> errorMessages = validate.stream()
+                        .map(ConstraintViolation::getMessage)
+                        .toList();
+
+                    throw new MapValidationException(errorMessages);
                 }
             }
         }
