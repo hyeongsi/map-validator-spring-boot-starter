@@ -1,6 +1,7 @@
 package io.github.hyeongsi.mapvalidator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.hyeongsi.mapvalidator.exception.MapValidationException;
 import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
@@ -61,6 +62,7 @@ class ValidateMapAspectTest {
         // then: 결과 검증
         assertThat(ex).isInstanceOf(ServletException.class);
         Throwable cause = ex.getCause();
+        assertThat(cause).isInstanceOf(MapValidationException.class);
         String message = cause.getMessage();
 
         assertThat(message)
